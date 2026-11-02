@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi Agenda Personal</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f3f0f7;
+    margin: 0;
+    color: #333;
+}
+
+header {
+    background: #594477;
+    color: white;
+    padding: 25px;
+    text-align: center;
+}
+
+main {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 20px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px #ddd;
+}
+
+input, button, textarea {
+    padding: 12px;
+    margin: 5px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+button {
+    background: #594477;
+    color: white;
+    cursor: pointer;
+    border: none;
+}
+
+li {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>MI AGENDA PERSONAL</h1>
+<p>Organizá tus días, actividades y proyectos</p>
+</header>
+
+<main>
+
+<div class="card">
+<h2>📅 Fecha de hoy</h2>
+<p id="fecha"></p>
+</div>
+
+<div class="card">
+<h2>➕ Agregar actividad</h2>
+
+<input id="actividad" placeholder="Nombre de la actividad">
+
+<input id="fechaActividad" type="date">
+
+<input id="horaActividad" type="time">
+
+<button onclick="agregarActividad()">
+Agregar
+</button>
+</div>
+
+<div class="card">
+<h2>📋 Mis actividades</h2>
+<ul id="lista"></ul>
+</div>
+
+<div class="card">
+<h2>📝 Mis notas</h2>
+
+<textarea id="notas"
+placeholder="Escribí tus notas..."
+rows="5"
+style="width:90%">
+</textarea>
+
+<br>
+
+<button onclick="guardarNotas()">
+Guardar notas
+</button>
+</div>
+
+</main>
+
+<script>
+
+document.getElementById("fecha").innerText =
+new Date().toLocaleDateString("es-AR");
+
+let actividades =
+JSON.parse(localStorage.getItem("actividades")) || [];
+
+function mostrarActividades() {
+
+let lista = document.getElementById("lista");
+
+lista.innerHTML = "";
+
+actividades.forEach((item, indice) => {
+
+let li = document.createElement("li");
+
+li.textContent =
+item.nombre + " - " +
+item.fecha + " - " + item.hora + " ";
+
+let boton = document.createElement("button");
+
+boton.textContent = "Eliminar";
+
+boton.onclick = () => eliminarActividad(indice);
+
+li.appendChild(boton);
+
+lista.appendChild(li);
+
+});
+
+}
+
+function agregarActividad() {
+
+let nombre =
+document.getElementById("actividad").value;
+
+let fecha =
+document.getElementById("fechaActividad").value;
+
+let hora =
+document.getElementById("horaActividad").value;
+
+if (!nombre || !fecha) {
+alert("Completá la actividad y la fecha");
+return;
+}
+
+actividades.push({
+nombre: nombre,
+fecha: fecha,
+hora: hora
+});
+
+localStorage.setItem(
+"actividades",
+JSON.stringify(actividades)
+);
+
+document.getElementById("actividad").value = "";
+
+mostrarActividades();
+
+}
+
+function eliminarActividad(indice) {
+
+actividades.splice(indice, 1);
+
+localStorage.setItem(
+"actividades",
+JSON.stringify(actividades)
+);
+
+mostrarActividades();
+
+}
+
+function guardarNotas() {
+
+localStorage.setItem(
+"misNotas",
+document.getElementById("notas").value
+);
+
+alert("Notas guardadas");
+
+}
+
+document.getElementById("notas").value =
+localStorage.getItem("misNotas") || "";
+
+mostrarActividades();
+
+</script>
+
+</body>
+</html>
